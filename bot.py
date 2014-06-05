@@ -43,4 +43,19 @@ def init():
           `kind` TEXT default NULL,
           `value` TEXT default NULL
         )''')
+    db_connection.commit()
     
+def add_variable(kind, value, protected):
+    row = [kind, value, protected]
+    db.execute('''
+        INSERT INTO `variables` (
+            `kind`, `value`, `protected`
+        ) VALUES (?, ?, ?)
+        ''', row)
+    db_connection.commit()
+
+def retrieve_all(table):
+    for row in db.execute("SELECT * FROM " + table):
+        print row
+
+        
