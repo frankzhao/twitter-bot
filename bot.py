@@ -1,9 +1,10 @@
 # Frank Zhao 2014
 # <frank@frankzhao.net>
 
-import twitter
+import tweepy
 import re
 import database
+import twittercredentials
 
 db = database.Database()
 bot_name = "@bot"
@@ -11,6 +12,11 @@ bot_name = "@bot"
 # Counters
 factoid_count = 0
 inventory_count = 0
+
+# Initalise Twitter
+twitter = twittercredentials.connect()
+# mentions = twitter.mentions_timeline()
+# user = mentions[0].author.screen_name
 
 def log(msg):
     print "LOG (BOT): " + msg
