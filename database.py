@@ -78,23 +78,32 @@ class Database:
         for row in db.execute("SELECT * FROM " + table):
             print row
             
-    def get_quote(self, user):
-        # Have a look at all the quotes for user
-        self.log("Getting quote for " + user)
-        n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE kind='quote' AND user=?",\
-            (user,)).fetchone()[0]
-        self.log("Found " + str(n) + " quotes from " + user)
-        if n>0:
-            randi = randint(0,n-1)
-            # Select a random quote
+    def get_quote(self, user, keywords=''):
+        if keywords:
             quotes = db.execute('''
                 SELECT * FROM `factoids` 
                 WHERE kind='quote' 
-                AND user=?''', (user,))
-            i = 0
-            for quote in quotes:
-                if i == randi:
-                    print quote
-                    break
-                else:
-                    i += 1
+                AND user=? 
+                AND value LIKE ?''', (user, '%'+keywords+'%'))
+            quote = quotes.fetchone()
+            print quote
+        else:
+            # Have a look at all the quotes for user
+            self.log("Getting quote for " + user)
+            n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE kind='quote' AND user=?",\
+                (user,)).fetchone()[0]
+            self.log("Found " + str(n) + " quotes from " + user)
+            if n>0:
+                randi = randint(0,n-1)
+                # Select a random quote
+                quotes = db.execute('''
+                    SELECT * FROM `factoids` 
+                    WHERE kind='quote' 
+                    AND user=?''', (user,))
+                i = 0
+                for quote in quotes:
+                    if i == randi:
+                        print quote
+                        break
+                    else:
+                        i += 1
