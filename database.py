@@ -50,8 +50,35 @@ class Database:
               `kind` TEXT default NULL,
               `value` TEXT default NULL
             )''')
+            
+        # Create seen tweets table
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS `tweet_id` (
+              `id` INTEGER PRIMARY KEY NOT NULL,
+              `tweet_id` TEXT default NULL
+            )''')
+        db.execute('''
+            INSERT INTO `tweet_id` (
+                `tweet_id`
+            ) VALUES (?)
+            ''', ('0', ))
         db_connection.commit()
         print "Database initialised"
+
+    def update_latest_seen_tweet_id(self, tweet_id):
+        db.execute('''
+            UPDATE `tweet_id`
+            SET tweet_id=?
+            WHERE id=1
+            ''', (tweet_id, ))
+        db_connection.commit()
+    
+    def get_latest_seen_tweet_id(self):
+        row = db.execute('''
+            SELECT * FROM `tweet_id` 
+            WHERE id=1
+            ''')
+        return int(row.fetchone()[1])
 
     def add_variable(self, kind, value, protected):
         row = [kind, value, protected]
@@ -79,6 +106,8 @@ class Database:
             print row
             
     def get_quote(self, user, keywords=''):
+        # remove @ from user
+        user = user[1:]
         if keywords:
             quotes = db.execute('''
                 SELECT * FROM `factoids` 
@@ -86,7 +115,7 @@ class Database:
                 AND user=? 
                 AND value LIKE ?''', (user, '%'+keywords+'%'))
             quote = quotes.fetchone()
-            print quote
+            return quote
         else:
             # Have a look at all the quotes for user
             self.log("Getting quote for " + user)
@@ -103,7 +132,7 @@ class Database:
                 i = 0
                 for quote in quotes:
                     if i == randi:
-                        print quote
+                        return quote
                         break
                     else:
                         i += 1
