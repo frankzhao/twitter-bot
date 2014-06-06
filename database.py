@@ -3,11 +3,15 @@
 # Database methods
 
 import sqlite3
+from random import randint
 
 db_connection = sqlite3.connect('db/bot.db') # Connect to db
 db = db_connection.cursor() # Database cursor
 
 class Database:
+    def log(self, msg):
+        print "LOG (DB): " + msg
+    
     # Sets up the initial database
     def init(self):
         # Create factoid table
@@ -73,3 +77,24 @@ class Database:
     def retrieve_all(self, table):
         for row in db.execute("SELECT * FROM " + table):
             print row
+            
+    def get_quote(self, user):
+        # Have a look at all the quotes for user
+        self.log("Getting quote for " + user)
+        n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE kind='quote' AND user=?",\
+            (user,)).fetchone()[0]
+        self.log("Found " + str(n) + " quotes from " + user)
+        if n>0:
+            randi = randint(0,n-1)
+            # Select a random quote
+            quotes = db.execute('''
+                SELECT * FROM `factoids` 
+                WHERE kind='quote' 
+                AND user=?''', (user,))
+            i = 0
+            for quote in quotes:
+                if i == randi:
+                    print quote
+                    break
+                else:
+                    i += 1
