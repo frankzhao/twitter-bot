@@ -33,14 +33,16 @@ while True:
         
         # specific quote retrival
         elif (parsed[0] == bot_name and parsed[1] == "quote"):
-          quotee = re.split(' ', re.findall("remember @[^\s]+", tweet)[0])[1]
-          db.get_quote
+          db.get_quote(parsed[2], re.split("@[^\s]+ ", tweet)[2])
         
         #otherwise ignore
         else: log("Ignored invalid quote operation: " + tweet)
     
     # random quote retrival
-    #else if len(parsed) == 3:
+    elif len(parsed) == 3:
+        if (parsed[0] == bot_name and parsed[1] == "quote"):
+            db.get_quote(parsed[2])
+            
         
     # otherwise ignore
     else: log("Ignored invalid quote operation: " + tweet)
