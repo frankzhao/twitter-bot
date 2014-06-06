@@ -2,60 +2,24 @@
 # <frank@frankzhao.net>
 
 import twitter
-import sqlite3
+import re
+import database
 
-db_connection = sqlite3.connect('db/bot.db') # Connect to db
-db = db_connection.cursor() # Database cursor
+db = database.Database()
 
-# Sets up the initial database
-def init():
-    # Create factoid table
-    db.execute('''
-        CREATE TABLE `factoids` (
-          `id` INTEGER PRIMARY KEY NOT NULL,
-          `kind` TEXT default NULL,
-          `value` TEXT default NULL,
-          `protected` int NOT NULL,
-          `user` TEXT default NULL
-        )''')
-        
-    # Create inventory table
-    db.execute('''
-        CREATE TABLE `inventory` (
-          `id` INTEGER PRIMARY KEY NOT NULL,
-          `value` TEXT default NULL,
-          `user` TEXT default NULL
-        )''')
-        
-    # Create variable types table
-    db.execute('''
-        CREATE TABLE `variables` (
-          `id` INTEGER PRIMARY KEY NOT NULL,
-          `kind` TEXT default NULL,
-          `value` TEXT default NULL,
-          `protected` int NOT NULL
-        )''')
-        
-    # Create variables table
-    db.execute('''
-        CREATE TABLE `vars` (
-          `id` INTEGER PRIMARY KEY NOT NULL,
-          `kind` TEXT default NULL,
-          `value` TEXT default NULL
-        )''')
-    db_connection.commit()
+# Counters
+factoid_count = 0
+inventory_count = 0
+
+while True:
+    # syntax is "@bot quote @user some quote"
+    tweet = raw_input("Enter some text: ")
+    # check that the bot has been mentioned
+    parsed = re.split(' ', tweet)
+    if (parsed[0] == "@bot" and parsed[1] == "quote"):
+        quotee = re.split(' ', re.findall("quote @[^\s]+", tweet)[0])[1]
+        quote = re.split("@[^\s]+ ", tweet)
+        if len(quote) == 3:
+            quote = re.split("@[^\s]+ ", tweet)[2]
+            db.add_factoid("quote", "quote " + quotee, quote, "quote", 0, "@user")
     
-def add_variable(kind, value, protected):
-    row = [kind, value, protected]
-    db.execute('''
-        INSERT INTO `variables` (
-            `kind`, `value`, `protected`
-        ) VALUES (?, ?, ?)
-        ''', row)
-    db_connection.commit()
-
-def retrieve_all(table):
-    for row in db.execute("SELECT * FROM " + table):
-        print row
-
-        
