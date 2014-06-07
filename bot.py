@@ -60,6 +60,9 @@ def main():
                 last_seen_tweet_id = tweet.id
                 db.update_latest_seen_tweet_id(tweet.id)
 
+            else:
+                log("No new tweets found.")
+
 db.init()        
 while True:
     #break
