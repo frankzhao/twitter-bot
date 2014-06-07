@@ -105,6 +105,17 @@ class Database:
         for row in db.execute("SELECT * FROM " + table):
             print row
             
+    # retrieve a random value from an iterable
+    def retrieve_random(self, iterable, n):
+        i=0
+        randi = randint(0,n-1)
+        for value in iterable:
+            if i == randi:
+                return value
+                break
+            else:
+                i += 1
+            
     def get_quote(self, user, keywords=''):
         # remove @ from user
         user = user[1:]
@@ -129,10 +140,20 @@ class Database:
                     SELECT * FROM `factoids` 
                     WHERE kind='quote' 
                     AND user=?''', (user,))
-                i = 0
-                for quote in quotes:
-                    if i == randi:
-                        return quote
-                        break
-                    else:
-                        i += 1
+                return self.retrieve_random(quotes, n)
+            else: return None
+
+    def get_factoid(self, word):
+        n = db.execute('''
+            SELECT COUNT(*) FROM `factoids` 
+            WHERE trigger LIKE ?
+            AND NOT kind='quote'
+            ''', ('%'+word+'%',)).fetchone()[0]
+        quotes = db.execute('''
+            SELECT * FROM `factoids` 
+            WHERE trigger LIKE ? 
+            AND NOT kind='quote'
+            ''', ('%'+word+'%',))
+        if n>0:
+            return self.retrieve_random(quotes, n)
+        else: return None
