@@ -150,7 +150,7 @@ class Database:
             else: return None
             
     def get_factoid(self, text):
-        text = text.strip("@cuddle_bot") # TODO make this a variable
+        text = text.replace("@cuddle_bot", "") # TODO make this a variable
         
         rows = db.execute("SELECT * FROM `factoids`")
         factoids = rows.fetchall()

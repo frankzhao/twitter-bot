@@ -15,7 +15,7 @@ bot_name = "@cuddle_bot"
 # Counters and timers
 factoid_count = 0
 inventory_count = 0
-last_seen_tweet_id = 0
+last_seen_tweet_id = db.get_latest_seen_tweet_id()
 sleep_interval = 100 # seconds
 
 # Initalise Twitter
@@ -30,17 +30,16 @@ def log(msg):
     print "LOG (BOT): " + msg
 
 def main(timeline):
+    global last_seen_tweet_id
     if len(timeline) == 0:
         log("No tweets found in timeline!")
     else:
         for tweet in timeline:
-            global last_seen_tweet_id
             if (int(tweet.id) > last_seen_tweet_id) and ("@" + tweet.user.screen_name) != bot_name:
                 log("Processing: " + tweet.text)
                 
                 # learn facts
                 interaction.add_fact(tweet)
-                continue
                 
                 # Things to run regardless of tweet format
                 # Cuddles and triggers

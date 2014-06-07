@@ -78,7 +78,7 @@ class Interactions:
     # look for triggers in database
     def triggers(self, tweet):
         self.log("Checking for possible triggers...")
-        factoid = self.db.get_factoid(tweet.text)
+        factoid = self.db.get_factoid(tweet.text.replace(self.bot_name, ""))
         if factoid:
             # Append advice # if necessary
             if factoid[1] == "advice":
@@ -106,10 +106,12 @@ class Interactions:
                     pre = pre + word + " "
                 else:
                     post = post + word + " "
+                    
+            # check that the fact is valid
+            if (len(pre)>0 and len(post)>0):            
+                # remove trailing space
+                pre  = pre[:len(pre)-1]
+                post = post[:len(post)-1]
             
-            # remove trailing space
-            pre  = pre[:len(pre)-1]
-            post = post[:len(post)-1]
-            
-            self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
+                self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
                 
