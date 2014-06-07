@@ -24,8 +24,6 @@ class Interactions:
     def process_quote(self, tweet):
             parsed = re.split(' ', tweet.text)
             
-            self.log("Processing: " + tweet.text)
-            
             # if the tweet contains quote @user
             for i in range(len(parsed) - 1):
                 word = parsed[i]
@@ -37,7 +35,7 @@ class Interactions:
                             + " (@" + tweet.user.screen_name + ")", tweet.id)
                     return
             
-            if (self.bot_name + " remember this") in tweet.text:
+            if (self.bot_name + " remember th") in tweet.text:
                 quote_tweet = twitter.get_status(tweet.in_reply_to_status_id)
                 quotee = quote_tweet.user.screen_name
                 quote  = quote_tweet.text
@@ -69,6 +67,7 @@ class Interactions:
 
     # look for triggers in database
     def triggers(self, tweet):
+        self.log("Checking for possible triggers...")
         parsed = re.split(' ', tweet.text)
         for word in parsed:
             factoid = self.db.get_factoid(word)
@@ -79,3 +78,4 @@ class Interactions:
                         + "Advice #" + str(randint(1,999)) + ": " + factoid[3], tweet.id)
                 else:
                     self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
+            else: self.log("No triggers found.")

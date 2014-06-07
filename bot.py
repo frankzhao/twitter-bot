@@ -30,9 +30,7 @@ def main():
     # keep track of last seen tweet even after restart
     last_seen_tweet_id = db.get_latest_seen_tweet_id()
     
-    # Quote parsing
-    # syntax is "@bot remember @user some quote"
-    #tweet = raw_input("Enter some text: ")
+    # Retrieve timeline
     timeline = twitter.home_timeline()
     timeline.reverse()
     log("Retrieved timeline...")
@@ -40,10 +38,9 @@ def main():
         log("No tweets found in timeline!")
     else:
         for tweet in timeline:
-            if int(tweet.id) > last_seen_tweet_id:
-                # update id of last seen tweet
-                last_seen_tweet_id = tweet.id
-                db.update_latest_seen_tweet_id(tweet.id)
+            # sanitize the tweet
+            if (int(tweet.id) > last_seen_tweet_id) and ("@" + tweet.user.screen_name) != bot_name:
+                log("Processing: " + tweet.text)
                 
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
@@ -57,6 +54,10 @@ def main():
                 # This block handles all other tweets not beginning with @bot_name
                 else: 
                     pass
+                
+                # update id of last seen tweet
+                last_seen_tweet_id = tweet.id
+                db.update_latest_seen_tweet_id(tweet.id)
 
 db.init()        
 while True:
