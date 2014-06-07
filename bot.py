@@ -26,7 +26,7 @@ def log(msg):
     print "LOG (BOT): " + msg
 
 def main():
-    interaction = interactions.Interactions(twitter_api, db, bot_name)
+    interaction = interactions.Interactions(twitter_api, twitter, db, bot_name)
     # keep track of last seen tweet even after restart
     last_seen_tweet_id = db.get_latest_seen_tweet_id()
     
@@ -45,11 +45,12 @@ def main():
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
                 interaction.triggers(tweet)
+                # look for quotes
+                interaction.process_quote(tweet)
                 
                 # This block handles all tweets with @bot_name as the first word
                 if (re.split(' ', tweet.text)[0] == bot_name):
-                    # look for quotes
-                    interaction.process_quote(tweet)
+                    pass
                     
                 # This block handles all other tweets not beginning with @bot_name
                 else: 

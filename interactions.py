@@ -11,10 +11,9 @@ from random import randint
 
 class Interactions:
     
-    bot_name = ""
-    
-    def __init__(self, twitter_api, sqldb, bot_name):
+    def __init__(self, twitter_api, twit, sqldb, bot_name):
         self.api = twitter_api
+        self.twitter = twit
         self.db = sqldb
         self.bot_name = bot_name
         
@@ -36,7 +35,7 @@ class Interactions:
                     return
             
             if (self.bot_name + " remember th") in tweet.text:
-                quote_tweet = twitter.get_status(tweet.in_reply_to_status_id)
+                quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
                 quotee = quote_tweet.user.screen_name
                 quote  = quote_tweet.text
                 self.db.add_factoid("quote", "quote " + quotee, quote, "remember", 0, quotee)

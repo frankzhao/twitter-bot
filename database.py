@@ -151,8 +151,8 @@ class Database:
             
     # TODO clean this up
     def get_factoid(self, word):
-        n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE trigger LIKE ? OR trigger LIKE ? OR trigger LIKE ? AND NOT kind='quote'", ("% "+word+"%", "%"+word+" %", "% "+word+" %")).fetchone()[0]
-        quotes = db.execute("SELECT * FROM `factoids` WHERE trigger LIKE ? OR trigger LIKE ? OR trigger LIKE ? AND NOT kind='quote'", ("% "+word+"%", "%"+word+" %", "% "+word+" %"))
+        n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE (trigger LIKE ? OR trigger LIKE ? OR trigger LIKE ?) AND NOT kind='quote'", ("% "+word+"%", "%"+word+" %", "% "+word+" %")).fetchone()[0]
+        quotes = db.execute("SELECT * FROM `factoids` WHERE (trigger LIKE ? OR trigger LIKE ? OR trigger LIKE ?) AND NOT kind='quote'", ("% "+word+"%", "%"+word+" %", "% "+word+" %"))
         if n>0:
             return self.retrieve_random(quotes, n)
         else: return None
