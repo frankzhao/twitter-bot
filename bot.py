@@ -15,7 +15,8 @@ bot_name = "@cuddle_bot"
 # Counters and timers
 factoid_count = 0
 inventory_count = 0
-sleep_interval = 100
+last_seen_tweet_id = 0
+sleep_interval = 100 # seconds
 
 # Initalise Twitter
 twitter_api = twitterapi.TwitterApi()
@@ -23,28 +24,23 @@ twitter = twitter_api.connect()
 # mentions = twitter.mentions_timeline()
 # user = mentions[0].author.screen_name
 
+interaction = interactions.Interactions(twitter_api, twitter, db, bot_name)
+
 def log(msg):
     print "LOG (BOT): " + msg
 
-def main():
-    interaction = interactions.Interactions(twitter_api, twitter, db, bot_name)
-    # keep track of last seen tweet even after restart
-    last_seen_tweet_id = db.get_latest_seen_tweet_id()
-    
-    # Retrieve timeline
-    timeline = twitter.home_timeline()
-    timeline.reverse()
-    log("Retrieved timeline...")
+def main(timeline):
     if len(timeline) == 0:
         log("No tweets found in timeline!")
     else:
         for tweet in timeline:
-            # sanitize the tweet
+            global last_seen_tweet_id
             if (int(tweet.id) > last_seen_tweet_id) and ("@" + tweet.user.screen_name) != bot_name:
                 log("Processing: " + tweet.text)
                 
                 # learn facts
                 interaction.add_fact(tweet)
+                continue
                 
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
@@ -70,7 +66,26 @@ def main():
 db.init()        
 while True:
     #break
-    main()
+    
+    # keep track of last seen tweet even after restart
+    last_seen_tweet_id = db.get_latest_seen_tweet_id()
+    
+    # Retrieve mentions
+    mentions = twitter.mentions_timeline()
+    mentions.reverse()
+    log("Retrieved mentions...")
+    
+    # start executing mentions timeline functions
+    main(mentions)
+    
+    # Retrieve timeline
+    timeline = twitter.home_timeline()
+    timeline.reverse()
+    log("Retrieved timeline...")
+    
+    # start executing home timeline functions
+    main(timeline)
+    
     log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     time.sleep(sleep_interval)
     
