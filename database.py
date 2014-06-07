@@ -116,9 +116,9 @@ class Database:
             else:
                 i += 1
     
-    def delete_factoid(self, table, idn):
+    def delete_entry(self, table, idn):
         db.execute("DELETE FROM " + table + " WHERE id=" + str(idn))
-        self.log("Factoid deleted!")
+        self.log("Entry deleted from " + table + "!")
     
             
     def get_quote(self, user, keywords=''):
@@ -151,11 +151,7 @@ class Database:
     # TODO clean this up
     def get_factoid(self, word):
         n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE trigger LIKE \'% " + word + " %\' OR trigger LIKE \'% " + word + "%\' OR trigger LIKE \'%" + word + " %\' AND NOT kind='quote'").fetchone()[0]
-        quotes = db.execute('''
-            SELECT * FROM `factoids` 
-            WHERE trigger LIKE ? 
-            AND NOT kind='quote'
-            ''', ('%'+word+'%',))
+        quotes = db.execute("SELECT * FROM `factoids` WHERE trigger LIKE \'% " + word + " %\' OR trigger LIKE \'% " + word + "%\' OR trigger LIKE \'%" + word + " %\' AND NOT kind='quote'")
         if n>0:
             return self.retrieve_random(quotes, n)
         else: return None

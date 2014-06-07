@@ -7,6 +7,7 @@ import re
 import database
 import twitterapi
 import interactions
+from random import randint
 
 class Interactions:
     
@@ -60,7 +61,7 @@ class Interactions:
                     quote = self.db.get_quote(parsed[2])
                     if quote != None:
                         self.api.tweet_reply("@" + quote[6] + ": " + quote[3] \
-                            + " (@" + tweet.user.screen_name + ")", tweet.id)
+                            + " (@" + twee.user.screen_name + ")", tweet.id)
         
     
             # otherwise ignore
@@ -72,4 +73,9 @@ class Interactions:
         for word in parsed:
             factoid = self.db.get_factoid(word)
             if factoid != None:
-                self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
+                # Append advice # if necessary
+                if factoid[1] == "advice":
+                    self.api.tweet_reply("@" + tweet.user.screen_name + " " \
+                        + "Advice #" + str(randint(1,999)) + ": " + factoid[3], tweet.id)
+                else:
+                    self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
