@@ -29,16 +29,19 @@ class Interactions:
                 if word == "quote":
                     # get a random quote
                     quote = self.db.get_quote(parsed[i+1])
-                    if quote != None:
+                    if quote:
                         self.api.tweet_reply("@" + quote[6] + ": " + quote[3] \
                             + " (@" + tweet.user.screen_name + ")", tweet.id)
-                    return
+                        return quote
+                    else:
+                        self.log("No quotes found.")
+                        return None
             
             if (self.bot_name + " remember th") in tweet.text:
                 quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
                 quotee = quote_tweet.user.screen_name
                 quote  = quote_tweet.text
-                self.db.add_factoid("quote", "quote " + quotee, quote, "remember", 0, quotee)
+                self.db.add_factoid("quote", "quote @" + quotee, quote, "remember", 0, quotee)
                 self.api.tweet_reply("Ok @" + tweet.user.screen_name + "!" \
                     + " (@" + quotee + ")", tweet.id)
             elif not len(parsed) < 4:
@@ -46,8 +49,12 @@ class Interactions:
                 # syntax is @bot quote @user [keywords]
                 if (parsed[0] == self.bot_name and parsed[1] == "quote"):
                   quote = self.db.get_quote(parsed[2], re.split("@[^\s]+ ", tweet.text)[2])
-                  if quote != None:
+                  if quote:
                       self.api.tweet_reply(quote[6] + ": " + quote[3], tweet.id)
+                      return quote
+                  else:
+                      self.log("No quotes found.")
+                      return None
     
                 #otherwise ignore
                 else: self.log("Ignored invalid quote operation: " + tweet.text)
@@ -56,9 +63,13 @@ class Interactions:
             elif len(parsed) == 3:
                 if (parsed[0] == self.bot_name and parsed[1] == "quote"):
                     quote = self.db.get_quote(parsed[2])
-                    if quote != None:
+                    if quote:
                         self.api.tweet_reply("@" + quote[6] + ": " + quote[3] \
-                            + " (@" + twee.user.screen_name + ")", tweet.id)
+                            + " (@" + tweet.user.screen_name + ")", tweet.id)
+                        return quote
+                    else:
+                        self.log("No quotes found!")
+                        return None
         
     
             # otherwise ignore
@@ -67,14 +78,15 @@ class Interactions:
     # look for triggers in database
     def triggers(self, tweet):
         self.log("Checking for possible triggers...")
-        parsed = re.split(' ', tweet.text)
-        for word in parsed:
-            factoid = self.db.get_factoid(word)
-            if factoid != None:
-                # Append advice # if necessary
-                if factoid[1] == "advice":
-                    self.api.tweet_reply("@" + tweet.user.screen_name + " " \
-                        + "Advice #" + str(randint(1,999)) + ": " + factoid[3], tweet.id)
-                else:
-                    self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
-            else: self.log("No triggers found.")
+        factoid = self.db.get_factoid(word)
+        if factoid:
+            # Append advice # if necessary
+            if factoid[1] == "advice":
+                self.api.tweet_reply("@" + tweet.user.screen_name + " " \
+                    + "Advice #" + str(randint(1,999)) + ": " + factoid[3], tweet.id)
+            else:
+                self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
+            return factoid
+        else: 
+            self.log("No triggers found.")
+            return None

@@ -44,9 +44,9 @@ def main():
                 
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
-                interaction.triggers(tweet)
-                # look for quotes
-                interaction.process_quote(tweet)
+                if not interaction.triggers(tweet):
+                    # look for quotes
+                    interaction.process_quote(tweet)
                 
                 # This block handles all tweets with @bot_name as the first word
                 if (re.split(' ', tweet.text)[0] == bot_name):
@@ -65,7 +65,7 @@ def main():
 
 db.init()        
 while True:
-    #break
+    break
     main()
     log("Going into idle...")
     time.sleep(sleep_interval)

@@ -150,9 +150,17 @@ class Database:
             else: return None
             
     # TODO clean this up
-    def get_factoid(self, word):
-        n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE (trigger LIKE ? OR trigger LIKE ? OR trigger LIKE ?) AND NOT kind='quote'", ("% "+word, word+" %", "% "+word+" %")).fetchone()[0]
-        quotes = db.execute("SELECT * FROM `factoids` WHERE (trigger LIKE ? OR trigger LIKE ? OR trigger LIKE ?) AND NOT kind='quote'", ("% "+word, word+" %", "% "+word+" %"))
-        if n>0:
-            return self.retrieve_random(quotes, n)
+    def get_factoid(self, text):
+        
+        rows = db.execute("SELECT * FROM `factoids`")
+        factoids = rows.fetchall()
+        
+        matches = []
+        
+        for factoid in factoids:
+            if factoid[2] in text:
+                matches.append(factoid)
+
+        if len(matches)>0:
+            return matches[randint(0, len(matches)-1)]
         else: return None
