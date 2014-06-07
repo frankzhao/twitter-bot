@@ -21,59 +21,66 @@ class Interactions:
         print "LOG (INTERACTION): " + msg
         
     def process_quote(self, tweet):
-            parsed = re.split(' ', tweet.text)
-            
-            # if the tweet contains quote @user
-            for i in range(len(parsed) - 1):
-                word = parsed[i]
-                if word == "quote":
-                    # get a random quote
-                    quote = self.db.get_quote(parsed[i+1])
-                    if quote:
-                        self.api.tweet_reply(quote[6] + ": " + quote[3] \
-                            + " (@" + tweet.user.screen_name + ")", tweet.id)
-                        return quote
-                    else:
-                        self.log("No quotes found.")
-                        return None
-            
-            if (self.bot_name + " remember th") in tweet.text:
-                quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
-                quotee = quote_tweet.user.screen_name
-                quote  = quote_tweet.text
-                self.db.add_factoid("quote", "quote @" + quotee, quote, "remember", 0, "@" + quotee)
-                self.api.tweet_reply("Ok @" + tweet.user.screen_name + "!" \
-                    + " (@" + quotee + ")", tweet.id)
-            elif not len(parsed) < 4:
-                # specific quote retrival
-                # syntax is @bot quote @user [keywords]
-                if (parsed[0] == self.bot_name and parsed[1] == "quote"):
-                  quote = self.db.get_quote(parsed[2], re.split("@[^\s]+ ", tweet.text)[2])
-                  if quote:
-                      self.api.tweet_reply(quote[6] + ": " + quote[3], tweet.id)
-                      return quote
-                  else:
-                      self.log("No quotes found.")
-                      return None
-    
-                #otherwise ignore
-                else: self.log("Ignored invalid quote operation: " + tweet.text)
-
-            # random quote retrival
-            elif len(parsed) == 3:
-                if (parsed[0] == self.bot_name and parsed[1] == "quote"):
-                    quote = self.db.get_quote(parsed[2])
-                    if quote:
-                        self.api.tweet_reply(quote[6] + ": " + quote[3] \
-                            + " (@" + tweet.user.screen_name + ")", tweet.id)
-                        return quote
-                    else:
-                        self.log("No quotes found!")
-                        return None
+        self.log("Checking for quotes...")
+        parsed = re.split(' ', tweet.text)
         
+        # if the tweet contains quote @user
+        for i in range(len(parsed) - 1):
+            word = parsed[i]
+            if word == "quote":
+                # get a random quote
+                quote = self.db.get_quote(parsed[i+1])
+                if quote:
+                    self.api.tweet_reply(quote[6] + ": " + quote[3] \
+                        + " (@" + tweet.user.screen_name + ")", tweet.id)
+                    return quote
+                else:
+                    self.log("No quotes found.")
+                    return None
+        
+        if (self.bot_name + " remember th") in tweet.text:
+            quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
+            quotee = quote_tweet.user.screen_name
+            quote  = quote_tweet.text
+            self.db.add_factoid("quote", "quote @" + quotee, quote, "remember", 0, "@" + quotee)
+            self.api.tweet_reply("Ok @" + tweet.user.screen_name + "!" \
+                + " (@" + quotee + ")", tweet.id)
+            return quote
+            
+        elif not len(parsed) < 4:
+            # specific quote retrival
+            # syntax is @bot quote @user [keywords]
+            if (parsed[0] == self.bot_name and parsed[1] == "quote"):
+              quote = self.db.get_quote(parsed[2], re.split("@[^\s]+ ", tweet.text)[2])
+              if quote:
+                  self.api.tweet_reply(quote[6] + ": " + quote[3], tweet.id)
+                  return quote
+              else:
+                  self.log("No quotes found.")
+                  return None
+
+            #otherwise ignore
+            else:
+                self.log("Ignored invalid quote operation: " + tweet.text)
+                return None
+
+        # random quote retrival
+        elif len(parsed) == 3:
+            if (parsed[0] == self.bot_name and parsed[1] == "quote"):
+                quote = self.db.get_quote(parsed[2])
+                if quote:
+                    self.api.tweet_reply(quote[6] + ": " + quote[3] \
+                        + " (@" + tweet.user.screen_name + ")", tweet.id)
+                    return quote
+                else:
+                    self.log("No quotes found!")
+                    return None
     
-            # otherwise ignore
-            else: self.log("Ignored invalid quote operation: " + tweet.text)
+
+        # otherwise ignore
+        else:
+            self.log("Ignored invalid quote operation: " + tweet.text)
+            return None
 
     # look for triggers in database
     def triggers(self, tweet):

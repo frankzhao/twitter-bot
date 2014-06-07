@@ -43,9 +43,9 @@ def main(timeline):
                 
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
-                if not interaction.triggers(tweet):
+                if not interaction.process_quote(tweet):
                     # look for quotes
-                    interaction.process_quote(tweet)
+                    interaction.triggers(tweet)
                 
                 # This block handles all tweets with @bot_name as the first word
                 elif (re.split(' ', tweet.text)[0] == bot_name):
@@ -85,6 +85,6 @@ while True:
     # start executing home timeline functions
     main(timeline)
     
-    log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + "\n"
     time.sleep(sleep_interval)
     
