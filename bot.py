@@ -48,13 +48,13 @@ def main():
                     # look for quotes
                     interaction.process_quote(tweet)
                 
-                    # This block handles all tweets with @bot_name as the first word
-                    elif (re.split(' ', tweet.text)[0] == bot_name):
-                        pass
+                # This block handles all tweets with @bot_name as the first word
+                elif (re.split(' ', tweet.text)[0] == bot_name):
+                    pass
                     
-                    # This block handles all other tweets not beginning with @bot_name
-                    else: 
-                        pass
+                # This block handles all other tweets not beginning with @bot_name
+                else: 
+                    pass
                 
                 # update id of last seen tweet
                 last_seen_tweet_id = tweet.id
@@ -65,7 +65,7 @@ def main():
 
 db.init()        
 while True:
-    break
+    #break
     main()
     log("Going into idle...")
     time.sleep(sleep_interval)
