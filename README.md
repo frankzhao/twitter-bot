@@ -5,14 +5,10 @@ Twitter bot (work in progress)
 
 Example Usage
 =============
-Remember the last tweet
+Remember the last tweet: `@cuddle_bot remember this`
 
-@cuddle_bot remember this
+Quote someone: `@cuddle_bot quote @user`
 
-Quote someone
+Find a particular quote: `@cuddle_bot quote @user something in the quote`
 
-@cuddle_bot quote @user
-
-Quote someone with keywords
-
-@cuddle_bot quote @user something in the quote
+Teach it a fact: `@cuddle_bot something is something else`
