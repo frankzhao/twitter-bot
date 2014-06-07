@@ -85,6 +85,6 @@ while True:
     # start executing home timeline functions
     main(timeline)
     
-    log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + "\n"
+    log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n")
     time.sleep(sleep_interval)
     
