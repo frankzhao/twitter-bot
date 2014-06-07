@@ -149,8 +149,8 @@ class Database:
                 return self.retrieve_random(quotes, n)
             else: return None
             
-    # TODO clean this up
     def get_factoid(self, text):
+        text = text.strip("@cuddle_bot") # TODO make this a variable
         
         rows = db.execute("SELECT * FROM `factoids`")
         factoids = rows.fetchall()

@@ -43,14 +43,14 @@ def main():
             if (int(tweet.id) > last_seen_tweet_id) and ("@" + tweet.user.screen_name) != bot_name:
                 log("Processing: " + tweet.text)
                 
+                # learn facts
+                interaction.add_fact(tweet)
+                
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
                 if not interaction.triggers(tweet):
                     # look for quotes
                     interaction.process_quote(tweet)
-                    
-                    # learn facts
-                    interaction.add_fact(tweet)
                 
                 # This block handles all tweets with @bot_name as the first word
                 elif (re.split(' ', tweet.text)[0] == bot_name):

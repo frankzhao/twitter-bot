@@ -30,7 +30,7 @@ class Interactions:
                     # get a random quote
                     quote = self.db.get_quote(parsed[i+1])
                     if quote:
-                        self.api.tweet_reply("@" + quote[6] + ": " + quote[3] \
+                        self.api.tweet_reply(quote[6] + ": " + quote[3] \
                             + " (@" + tweet.user.screen_name + ")", tweet.id)
                         return quote
                     else:
@@ -41,7 +41,7 @@ class Interactions:
                 quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
                 quotee = quote_tweet.user.screen_name
                 quote  = quote_tweet.text
-                self.db.add_factoid("quote", "quote @" + quotee, quote, "remember", 0, quotee)
+                self.db.add_factoid("quote", "quote @" + quotee, quote, "remember", 0, "@" + quotee)
                 self.api.tweet_reply("Ok @" + tweet.user.screen_name + "!" \
                     + " (@" + quotee + ")", tweet.id)
             elif not len(parsed) < 4:
@@ -64,7 +64,7 @@ class Interactions:
                 if (parsed[0] == self.bot_name and parsed[1] == "quote"):
                     quote = self.db.get_quote(parsed[2])
                     if quote:
-                        self.api.tweet_reply("@" + quote[6] + ": " + quote[3] \
+                        self.api.tweet_reply(quote[6] + ": " + quote[3] \
                             + " (@" + tweet.user.screen_name + ")", tweet.id)
                         return quote
                     else:
