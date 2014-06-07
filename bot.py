@@ -60,6 +60,7 @@ def main():
 
 db.init()        
 while True:
+    break
     main()
     log("Going into idle...")
     time.sleep(sleep_interval)

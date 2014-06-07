@@ -98,8 +98,8 @@ class Database:
             ) VALUES (?, ?, ?, ?, ?, ?)
             ''', row)
         db_connection.commit()
-        print "FACTOID: added <" + trigger + "> <" + verb + "> <" \
-            + value + "> as a <" + kind + "> for user " + user
+        self.log("FACTOID: added <" + trigger + "> <" + verb + "> <" \
+            + value + "> as a <" + kind + "> for user " + user)
 
     def retrieve_all(self, table):
         for row in db.execute("SELECT * FROM " + table):
@@ -115,6 +115,11 @@ class Database:
                 break
             else:
                 i += 1
+    
+    def delete_factoid(self, table, idn):
+        db.execute("DELETE FROM " + table + " WHERE id=" + str(idn))
+        self.log("Factoid deleted!")
+    
             
     def get_quote(self, user, keywords=''):
         # remove @ from user
@@ -142,13 +147,10 @@ class Database:
                     AND user=?''', (user,))
                 return self.retrieve_random(quotes, n)
             else: return None
-
+            
+    # TODO clean this up
     def get_factoid(self, word):
-        n = db.execute('''
-            SELECT COUNT(*) FROM `factoids` 
-            WHERE trigger LIKE ?
-            AND NOT kind='quote'
-            ''', ('%'+word+'%',)).fetchone()[0]
+        n = db.execute("SELECT COUNT(*) FROM `factoids` WHERE trigger LIKE \'% " + word + " %\' OR trigger LIKE \'% " + word + "%\' OR trigger LIKE \'%" + word + " %\' AND NOT kind='quote'").fetchone()[0]
         quotes = db.execute('''
             SELECT * FROM `factoids` 
             WHERE trigger LIKE ? 
