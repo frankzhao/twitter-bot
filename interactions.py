@@ -78,7 +78,7 @@ class Interactions:
     # look for triggers in database
     def triggers(self, tweet):
         self.log("Checking for possible triggers...")
-        factoid = self.db.get_factoid(word)
+        factoid = self.db.get_factoid(tweet.text)
         if factoid:
             # Append advice # if necessary
             if factoid[1] == "advice":
@@ -90,3 +90,26 @@ class Interactions:
         else: 
             self.log("No triggers found.")
             return None
+    
+    def add_fact(self, tweet):
+        parsed = tweet.text.split(' ')
+        if parsed[0] == self.bot_name:
+            parsed = parsed[1:] # strip out @bot_name
+            
+            pre  = ""
+            post = ""
+            get_pre_mode = True # check that we're getting the left side
+            for word in parsed:
+                if word == "is":
+                    get_pre_mode = False
+                elif get_pre_mode:
+                    pre = pre + word + " "
+                else:
+                    post = post + word + " "
+            
+            # remove trailing space
+            pre  = pre[:len(pre)-1]
+            post = post[:len(post)-1]
+            
+            self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
+                

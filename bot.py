@@ -7,6 +7,7 @@ import re
 import database
 import twitterapi
 import interactions
+from datetime import datetime
 
 db = database.Database()
 bot_name = "@cuddle_bot"
@@ -47,6 +48,9 @@ def main():
                 if not interaction.triggers(tweet):
                     # look for quotes
                     interaction.process_quote(tweet)
+                    
+                    # learn facts
+                    interaction.add_fact(tweet)
                 
                 # This block handles all tweets with @bot_name as the first word
                 elif (re.split(' ', tweet.text)[0] == bot_name):
@@ -61,12 +65,12 @@ def main():
                 db.update_latest_seen_tweet_id(tweet.id)
 
             else:
-                log("No new tweets found.")
+                log("Ignoring already processed tweet.")
 
 db.init()        
 while True:
     #break
     main()
-    log("Going into idle...")
+    log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     time.sleep(sleep_interval)
     
