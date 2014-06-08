@@ -100,27 +100,35 @@ class Interactions:
     
     def add_fact(self, tweet):
         parsed = tweet.text.split(' ')
+        
         if parsed[0] == self.bot_name:
             parsed = parsed[1:] # strip out @bot_name
             
-            pre  = ""
-            post = ""
-            get_pre_mode = True # check that we're getting the left side
-            for word in parsed:
-                if word == "is":
-                    get_pre_mode = False
-                elif get_pre_mode:
-                    pre = pre + word + " "
-                else:
-                    post = post + word + " "
+            # check if it is a cuddle request
+            # TODO move this into a method
+            if len(parsed) == 2 and parsed[0] == "cuddle":
+                if parsed[1][0] == "@":
+                    self.api.tweet_reply("@" + tweet.user.screen_name \
+                        + " *cuddles* " + parsed[1], tweet.id)
+            else:            
+                pre  = ""
+                post = ""
+                get_pre_mode = True # check that we're getting the left side
+                for word in parsed:
+                    if word == "is":
+                        get_pre_mode = False
+                    elif get_pre_mode:
+                        pre = pre + word + " "
+                    else:
+                        post = post + word + " "
                     
-            # check that the fact is valid
-            if (len(pre)>0 and len(post)>0):            
-                # remove trailing space
-                pre  = pre[:len(pre)-1]
-                post = post[:len(post)-1]
+                # check that the fact is valid
+                if (len(pre)>0 and len(post)>0):            
+                    # remove trailing space
+                    pre  = pre[:len(pre)-1]
+                    post = post[:len(post)-1]
             
-                self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
+                    self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
     
     def provide_help(self, tweet):
         if tweet.text == (self.bot_name + " --help"):
