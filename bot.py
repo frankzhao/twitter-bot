@@ -39,16 +39,21 @@ def main(timeline):
                 log("Processing: " + tweet.text)
                 
                 # tweet help message if necessary
-                interaction.provide_help(tweet)
-                
-                # learn facts
-                interaction.add_fact(tweet)
+                if interaction.provide_help(tweet):
+                    pass
+                    
+                # attempt to learn facts
+                elif interaction.add_fact(tweet):
+                    pass
                 
                 # Things to run regardless of tweet format
                 # Cuddles and triggers
-                if not interaction.process_quote(tweet):
-                    # look for quotes
-                    interaction.triggers(tweet)
+                elif interaction.process_quote(tweet):
+                    pass
+                    
+                # look for quotes
+                elif interaction.triggers(tweet):
+                    pass
                 
                 # This block handles all tweets with @bot_name as the first word
                 elif (re.split(' ', tweet.text)[0] == bot_name):
