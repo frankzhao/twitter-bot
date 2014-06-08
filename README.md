@@ -24,7 +24,7 @@ A database file is created in db/bot.db if it does not already exist.
 Start the bot with `python bot.py`.
 
 Files
-=====
+-----
 
 #### bot.py
 
