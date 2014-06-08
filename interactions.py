@@ -123,6 +123,6 @@ class Interactions:
                 self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
     
     def provide_help(self, tweet):
-        if tweet.text == (bot_name + " --help"):
+        if tweet.text == (self.bot_name + " --help"):
             self.api.tweet_reply("My documentation is here: https://t.co/xmPavDZWxY", tweet.id)
                 
