@@ -63,7 +63,8 @@ def main(timeline):
                 db.update_latest_seen_tweet_id(tweet.id)
 
             else:
-                log("Ignoring already processed tweet.")
+                #log("Ignoring already processed tweet.")
+                pass
 
 db.init()        
 while True:

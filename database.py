@@ -158,7 +158,11 @@ class Database:
         matches = []
         
         for factoid in factoids:
-            if factoid[2] in text:
+            if (factoid[2] + " ") in text:
+                matches.append(factoid)
+            elif (" " + factoid[2] + " ") in text:
+                matches.append(factoid)
+            elif (" " + factoid[2]) in text:
                 matches.append(factoid)
 
         if len(matches)>0:
