@@ -124,5 +124,5 @@ class Interactions:
     
     def provide_help(self, tweet):
         if tweet.text == (self.bot_name + " --help"):
-            self.api.tweet_reply("My documentation is here: https://t.co/xmPavDZWxY", tweet.id)
+            self.api.tweet_reply("@" + tweet.user.screen_name + " My documentation is here: https://t.co/xmPavDZWxY", tweet.id)
                 
