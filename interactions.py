@@ -112,7 +112,7 @@ class Interactions:
             
             # check if it is a cuddle request
             # TODO move this into a method
-            if len(parsed) == 2 and parsed[0] == "cuddle":
+            if len(parsed) >= 2 and parsed[0] == "cuddle":
                 if parsed[1][0] == "@":
                     self.api.tweet_reply("@" + tweet.user.screen_name \
                         + " *cuddles* " + parsed[1], tweet.id)
@@ -131,7 +131,7 @@ class Interactions:
                         post = post + word + " "
                     
                 # check that the fact is valid
-                if (len(pre)>0 and len(post)>0):            
+                if (len(pre)>0 and len(post)>0) and "@" not in pre:            
                     # remove trailing space
                     pre  = pre[:len(pre)-1]
                     post = post[:len(post)-1]
