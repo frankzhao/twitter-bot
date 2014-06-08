@@ -92,7 +92,13 @@ class Interactions:
                 self.api.tweet_reply("@" + tweet.user.screen_name + " " \
                     + "Advice #" + str(randint(1,999)) + ": " + factoid[3], tweet.id)
             else:
-                self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
+                # check if it is a retweet
+                try:
+                    original_status = tweet.retweeted_status
+                    orignal_user = original_status.user.screen_name
+                    self.api.tweet_reply("@" + original_user + " " + factoid[3], original_status.id)
+                except:
+                    self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
             return factoid
         else: 
             self.log("No triggers found.")
