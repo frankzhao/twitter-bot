@@ -38,6 +38,9 @@ def main(timeline):
             if (int(tweet.id) > last_seen_tweet_id) and ("@" + tweet.user.screen_name) != bot_name:
                 log("Processing: " + tweet.text)
                 
+                # tweet help message if necessary
+                interaction.provide_help(tweet)
+                
                 # learn facts
                 interaction.add_fact(tweet)
                 
