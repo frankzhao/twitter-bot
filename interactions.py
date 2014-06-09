@@ -41,6 +41,7 @@ class Interactions:
         # if the tweet contains quote @user
         for i in range(len(parsed) - 1):
             word = parsed[i]
+            word = word.lower()
             if word == "quote":
                 # get a random quote
                 quote = self.db.get_quote(parsed[i+1])
@@ -52,7 +53,7 @@ class Interactions:
                     self.log("No quotes found.")
                     return False
         
-        if (self.bot_name + " remember th") in tweet.text:
+        if (self.bot_name + " remember th") in tweet.text.lower():
             quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
             quotee = quote_tweet.user.screen_name
             quote  = quote_tweet.text
@@ -64,6 +65,7 @@ class Interactions:
         elif not len(parsed) < 4:
             # specific quote retrival
             # syntax is @bot quote @user [keywords]
+            parsed[1] == parsed[1].lower()
             if (parsed[0] == self.bot_name and parsed[1] == "quote"):
               quote = self.db.get_quote(parsed[2], re.split("@[^\s]+ ", tweet.text)[2])
               if quote:
