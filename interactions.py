@@ -132,7 +132,7 @@ class Interactions:
             if len(parsed) >= 2 and parsed[0] == "cuddle":
                 if parsed[1][0] == "@":
                     self.api.tweet_reply("@" + tweet.user.screen_name \
-                        + " *cuddles* " + parsed[1], tweet.id)
+                        + " * cuddles " + parsed[1], tweet.id) + " *"
                     self.log("User successfully cuddled")
                     return True
             else:            
