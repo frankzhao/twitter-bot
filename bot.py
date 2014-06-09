@@ -79,20 +79,26 @@ while True:
     last_seen_tweet_id = db.get_latest_seen_tweet_id()
     
     # Retrieve mentions
-    mentions = twitter.mentions_timeline()
-    mentions.reverse()
-    log("Retrieved mentions...")
+    try:
+        mentions = twitter.mentions_timeline()
+        mentions.reverse()
+        log("Retrieved mentions...")
     
-    # start executing mentions timeline functions
-    main(mentions)
+        # start executing mentions timeline functions
+        main(mentions)
+    except:
+        pass
     
-    # Retrieve timeline
-    timeline = twitter.home_timeline()
-    timeline.reverse()
-    log("Retrieved timeline...")
+    try:
+        # Retrieve timeline
+        timeline = twitter.home_timeline()
+        timeline.reverse()
+        log("Retrieved timeline...")
     
-    # start executing home timeline functions
-    main(timeline)
+        # start executing home timeline functions
+        main(timeline)
+    except:
+        pass
     
     log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n")
     time.sleep(sleep_interval)
