@@ -150,7 +150,7 @@ class Interactions:
                         post = post + word + " "
                     
                 # check that the fact is valid
-                if (len(pre)>0 and len(post)>0) and "@" not in pre:            
+                if (len(pre)>2 and len(post)>0):            
                     # remove trailing space
                     pre  = pre[:len(pre)-1]
                     post = post[:len(post)-1]
