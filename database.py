@@ -100,6 +100,9 @@ class Database:
         db_connection.commit()
         self.log("FACTOID: added <" + trigger + "> <" + verb + "> <" \
             + value + "> as a <" + kind + "> for user " + user)
+    
+    def commit_changes(self):
+        db_connection.commit()
 
     def retrieve_all(self, table):
         for row in db.execute("SELECT * FROM " + table):
