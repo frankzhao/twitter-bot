@@ -105,6 +105,9 @@ class Database:
         for row in db.execute("SELECT * FROM " + table):
             print row
             
+    def sql(self, statement):
+        db.execute(statement)
+            
     # retrieve a random value from an iterable
     def retrieve_random(self, iterable, n):
         i=0
