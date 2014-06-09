@@ -19,6 +19,20 @@ class Interactions:
         
     def log(self, msg):
         print "LOG (INTERACTION): " + msg
+    
+    # return all mentions as a string
+    def tweet_mentions(self, tweet):
+        parsed = re.split(' ', tweet.text)
+        users = []
+        for word in parsed:
+            if word[0] == "@":
+                users.append(word)
+                
+        new_status_mentions = ""
+        for user in users:
+            new_status_mentions = new_status_mentions + user + " "
+            
+        return new_status_mentions
         
     def process_quote(self, tweet):
         self.log("Checking for quotes...")
@@ -89,16 +103,19 @@ class Interactions:
         if factoid:
             # Append advice # if necessary
             if factoid[1] == "advice":
-                self.api.tweet_reply("@" + tweet.user.screen_name + " " \
+                self.api.tweet_reply(self.tweet_mentions(tweet) + "@" + tweet.user.screen_name + " " \
                     + "Advice #" + str(randint(1,999)) + ": " + factoid[3], tweet.id)
             else:
                 # check if it is a retweet
                 try:
                     original_status = tweet.retweeted_status
                     orignal_user = original_status.user.screen_name
-                    self.api.tweet_reply("@" + original_user + " " + factoid[3], original_status.id)
+                        
+                    self.api.tweet_reply(self.tweet_mentions(tweet) \
+                        + "@" + original_user + " " + factoid[3], original_status.id)
                 except:
-                    self.api.tweet_reply("@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
+                    self.api.tweet_reply(self.tweet_mentions(tweet) \
+                        + "@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
             return factoid
         else: 
             self.log("No triggers found.")
