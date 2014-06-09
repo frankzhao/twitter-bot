@@ -25,7 +25,7 @@ class Interactions:
         parsed = re.split(' ', tweet.text)
         users = []
         for word in parsed:
-            if word[0] == "@":
+            if word[0] == "@" and word != self.bot_name:
                 users.append(word)
                 
         new_status_mentions = ""
