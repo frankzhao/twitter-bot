@@ -18,9 +18,9 @@ class TwitterApi:
         return self.api
 
     def tweet_reply(self, status, in_reply_to_status_id):
-        log("Replying to " + in_reply_to_status_id +  "with: " + status)
+        self.log("Replying to " + in_reply_to_status_id +  "with: " + status)
         self.api.update_status(status, in_reply_to_status_id)
         
     def tweet_status(self, status):
-        log("Tweeting: " + status)
+        self.log("Tweeting: " + status)
         self.api.update_status(status)
