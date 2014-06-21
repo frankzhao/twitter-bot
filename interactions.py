@@ -124,7 +124,9 @@ class Interactions:
             return False
     
     def add_fact(self, tweet):
-        parsed = tweet.text.split(' ')
+        text = tweet.text
+        text = text.replace("@cuddle_bot", "") # strip out @bot_name
+        parsed = text.split(' ')
         
         # lets try learning everything oh god this is probably a bad idea
         if True: #parsed[0] == self.bot_name:
