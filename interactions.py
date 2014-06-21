@@ -164,7 +164,7 @@ class Interactions:
         if tweet.text == "@cuddle_bot say something random":
             factoid = self.db.get_random_factoid()
             if factoid:
-                self.api.tweet_reply(self.tweet_mentions(tweet) \
+                self.api.tweet_reply("@" + tweet.user.screen_name + " " \
                     + factoid[2] + " " + factoid[4] + " " + factoid[3], tweet.id)
             return True
         else:
