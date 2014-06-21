@@ -170,3 +170,17 @@ class Database:
         if len(matches)>0:
             return matches[randint(0, len(matches)-1)]
         else: return None
+
+    def get_random_factoid(self):
+        
+        rows = db.execute("SELECT * FROM `factoids` WHERE kind='fact'")
+        factoids = rows.fetchall()
+        
+        matches = []
+        
+        for factoid in factoids:
+            matches.append(factoid)
+
+        if len(matches)>0:
+            return matches[randint(0, len(matches)-1)]
+        else: return None

@@ -126,7 +126,8 @@ class Interactions:
     def add_fact(self, tweet):
         parsed = tweet.text.split(' ')
         
-        if parsed[0] == self.bot_name:
+        # lets try learning everything oh god this is probably a bad idea
+        if True: #parsed[0] == self.bot_name:
             parsed = parsed[1:] # strip out @bot_name
             
             # check if it is a cuddle request
@@ -157,9 +158,21 @@ class Interactions:
             
                     self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
                     return True
+
+    def random_factoid(self, tweet):
+        if tweet.text == "@cuddle_bot say something random":
+            factoid = self.db.get_random_factoid()
+            if factoid:
+                self.api.tweet_reply(tweet_mentions(tweet) \
+                    + factoid[2] + " " + factoid[4] + " " + factoid[3], tweet.id)
+            return True
+        else:
+            return False
     
     def provide_help(self, tweet):
         if tweet.text == (self.bot_name + " --help"):
             self.api.tweet_reply("@" + tweet.user.screen_name \
                 + " My documentation is here: https://t.co/xmPavDZWxY", tweet.id)
             return True
+        else:
+            return False

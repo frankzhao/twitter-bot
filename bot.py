@@ -41,6 +41,9 @@ def main(timeline):
                 # tweet help message if necessary
                 if interaction.provide_help(tweet):
                     pass
+
+                elif random_factoid(tweet):
+                    pass
                     
                 # attempt to learn facts
                 elif interaction.add_fact(tweet):
