@@ -14,6 +14,8 @@ Find a particular quote: `@cuddle_bot quote @user something in the quote`
 
 Teach it a fact: `@cuddle_bot something is something else`
 
+Ask me for advice: `@cuddle_bot give me advice on [...]`
+
 Dependencies
 ------------
 
