@@ -42,5 +42,5 @@ All tweets should be processed with methods here. All methods defined in this fi
 
 #### twitterapi.py
 
-Twitter API functions are implemented in this file. Your API keys go here.
+Twitter API functions are implemented in this file. **Your API keys go here**.
 
