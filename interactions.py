@@ -130,7 +130,6 @@ class Interactions:
         
         # lets try learning everything oh god this is probably a bad idea
         if True: #parsed[0] == self.bot_name:
-            parsed = parsed[1:] # strip out @bot_name
             
             # check if it is a cuddle request
             # TODO move this into a method
