@@ -126,6 +126,10 @@ class Interactions:
     def add_fact(self, tweet):
         text = tweet.text
         text = text.replace("@cuddle_bot", "") # strip out @bot_name
+
+        if "@" in text:
+            return False # ignore if it contains mentions
+
         parsed = text.split(' ')
         
         # lets try learning everything oh god this is probably a bad idea
