@@ -90,7 +90,7 @@ while True:
         # start executing mentions timeline functions
         main(mentions)
     except:
-        pass
+        log("ERROR: Retriving mentions...")
     
     try:
         # Retrieve timeline
@@ -101,7 +101,7 @@ while True:
         # start executing home timeline functions
         main(timeline)
     except:
-        pass
+        log("ERROR: Retriving timeline...")
     
     log("Going into idle... " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n")
     time.sleep(sleep_interval)
