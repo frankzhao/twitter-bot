@@ -126,7 +126,7 @@ class Interactions:
                         self.api.tweet_reply(self.tweet_mentions(tweet) \
                             + "@" + original_user + " " + factoid[3] + " " \
                             + factoid[4] + " " + factoid[3], original_status.id)
-                    else
+                    else:
                         self.api.tweet_reply(self.tweet_mentions(tweet) \
                             + "@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
             return factoid
