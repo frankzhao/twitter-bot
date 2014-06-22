@@ -112,12 +112,23 @@ class Interactions:
                 try:
                     original_status = tweet.retweeted_status
                     orignal_user = original_status.user.screen_name
-                        
-                    self.api.tweet_reply(self.tweet_mentions(tweet) \
-                        + "@" + original_user + " " + factoid[3], original_status.id)
+
+                    if factoid[1] == "fact":
+                        self.api.tweet_reply(self.tweet_mentions(tweet) \
+                            + "@" + original_user + " " + factoid[3] + " " \
+                            + factoid[4] + " " + factoid[3], original_status.id)
+                    else:
+                        self.api.tweet_reply(self.tweet_mentions(tweet) \
+                            + "@" + original_user + " " + factoid[3], original_status.id)
+                # if not a retweet
                 except:
-                    self.api.tweet_reply(self.tweet_mentions(tweet) \
-                        + "@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
+                    if factoid[1] == "fact":
+                        self.api.tweet_reply(self.tweet_mentions(tweet) \
+                            + "@" + original_user + " " + factoid[3] + " " \
+                            + factoid[4] + " " + factoid[3], original_status.id)
+                    else
+                        self.api.tweet_reply(self.tweet_mentions(tweet) \
+                            + "@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
             return factoid
         else: 
             self.log("No triggers found.")
@@ -156,7 +167,7 @@ class Interactions:
                         post = post + word + " "
                     
                 # check that the fact is valid
-                if (len(pre)>2 and len(post)>0):            
+                if len(pre.split(" "))>2 and len(post)>0:            
                     # remove trailing space
                     pre  = pre[:len(pre)-1]
                     post = post[:len(post)-1]
