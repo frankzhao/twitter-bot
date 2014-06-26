@@ -128,8 +128,6 @@ class Database:
     
             
     def get_quote(self, user, keywords=''):
-        # remove @ from user
-        user = user[1:]
         if keywords:
             self.sanitize(keywords)
             quotes = db.execute('''
@@ -153,7 +151,7 @@ class Database:
                     WHERE kind='quote' 
                     AND user=?''', (user,))
                 return self.retrieve_random(quotes, n)
-            else: return None
+            else: return False
             
     def get_factoid(self, text):
         text = text.replace("@cuddle_bot", "") # TODO make this a variable
