@@ -10,16 +10,16 @@ import interactions
 from random import randint
 
 class Interactions:
-    
+
     def __init__(self, twitter_api, twit, sqldb, bot_name):
         self.api = twitter_api
         self.twitter = twit
         self.db = sqldb
         self.bot_name = bot_name
-        
+
     def log(self, msg):
         print "LOG (INTERACTION): " + msg
-    
+
     # return all mentions as a string
     def tweet_mentions(self, tweet):
         parsed = re.split(' ', tweet.text)
@@ -27,17 +27,17 @@ class Interactions:
         for word in parsed:
             if word[0] == "@" and word != self.bot_name:
                 users.append(word)
-                
+
         new_status_mentions = ""
         for user in users:
             new_status_mentions = new_status_mentions + user + " "
-            
+
         return new_status_mentions
-        
+
     def process_quote(self, tweet):
         self.log("Checking for quotes...")
         parsed = re.split(' ', tweet.text)
-        
+
         # if the tweet contains quote @user
         for i in range(len(parsed) - 1):
             word = parsed[i]
@@ -50,9 +50,15 @@ class Interactions:
                         + " (@" + tweet.user.screen_name + ")", tweet.id)
                     return True
                 else:
-                    self.log("No quotes found.")
-                    return False
-        
+                    #self.log("No quotes found.")
+                    user_tweets = self.api.user_timeline(parsed[i+1])
+                    quote = user_tweets[randint(0,19)].text
+                    if quote:
+                        self.api.tweet_reply(parsed[i+1] + ": " + quote + " (@" + tweet.user.screen_name + ")", tweet.id)
+                    else:
+                        return False
+                    return True
+
         if (self.bot_name + " remember th") in tweet.text.lower():
             quote_tweet = self.twitter.get_status(tweet.in_reply_to_status_id)
             quotee = quote_tweet.user.screen_name
@@ -61,7 +67,7 @@ class Interactions:
             self.api.tweet_reply("Ok @" + tweet.user.screen_name + "!" \
                 + " (@" + quotee + ")", tweet.id)
             return True
-            
+
         elif not len(parsed) < 4:
             # specific quote retrival
             # syntax is @bot quote @user [keywords]
@@ -91,7 +97,7 @@ class Interactions:
                 else:
                     self.log("No quotes found!")
                     return False
-    
+
 
         # otherwise ignore
         else:
@@ -130,10 +136,10 @@ class Interactions:
                         self.api.tweet_reply(self.tweet_mentions(tweet) \
                             + "@" + tweet.user.screen_name + " " + factoid[3], tweet.id)
             return factoid
-        else: 
+        else:
             self.log("No triggers found.")
             return False
-    
+
     def add_fact(self, tweet):
         text = tweet.text
         text = text.replace("@cuddle_bot", "") # strip out @bot_name
@@ -142,10 +148,10 @@ class Interactions:
             return False # ignore if it contains mentions
 
         parsed = text.split(' ')
-        
+
         # lets try learning everything oh god this is probably a bad idea
         if True: #parsed[0] == self.bot_name:
-            
+
             # check if it is a cuddle request
             # TODO move this into a method
             if len(parsed) >= 2 and parsed[0] == "cuddle":
@@ -154,7 +160,7 @@ class Interactions:
                         + " * cuddles " + parsed[1], tweet.id) + " *"
                     self.log("User successfully cuddled")
                     return True
-            else:            
+            else:
                 pre  = ""
                 post = ""
                 get_pre_mode = True # check that we're getting the left side
@@ -165,13 +171,13 @@ class Interactions:
                         pre = pre + word + " "
                     else:
                         post = post + word + " "
-                    
+
                 # check that the fact is valid
-                if len(pre.split(" "))>2 and len(post)>0:            
+                if len(pre.split(" "))>2 and len(post)>0:
                     # remove trailing space
                     pre  = pre[:len(pre)-1]
                     post = post[:len(post)-1]
-            
+
                     self.db.add_factoid("fact", pre, post, "is", 0, "@" + tweet.user.screen_name)
                     return True
 
@@ -184,7 +190,7 @@ class Interactions:
             return True
         else:
             return False
-    
+
     def provide_help(self, tweet):
         if tweet.text == (self.bot_name + " --help"):
             self.api.tweet_reply("@" + tweet.user.screen_name \
